@@ -1,0 +1,79 @@
+# README
+
+## Overview
+This project demonstrates a simple wireless communication system using an NRF24L01 module, an LCD display with I2C interface, and a 4x4 Keypad. The system allows users to enter key presses through the keypad, and when the `#` key is pressed, the entered data is transmitted wirelessly using the NRF24L01 module. The sent message is displayed on the LCD screen.
+
+## Hardware Components
+1. **NRF24L01 Module** - For wireless communication.
+2. **LCD Display (I2C interface)** - For displaying the sent message.
+3. **4x4 Keypad** - For inputting data.
+4. **Arduino Board** - The microcontroller used for this project (e.g., Arduino Uno).
+5. **Wires and Breadboard** - For wiring connections between the components.
+
+## Libraries Used
+1. **Keypad.h** - To interface with the 4x4 keypad.
+2. **SPI.h** - SPI communication library used by the NRF24L01 module.
+3. **nRF24L01.h & RF24.h** - Libraries to control the NRF24L01 module.
+4. **LCD-I2C.h** - To control the LCD display with an I2C interface.
+
+## Circuit Connections
+
+### 4x4 Keypad
+- Row Pins: Connect to Arduino digital pins 9, 8, 7, and 6.
+- Column Pins: Connect to Arduino digital pins 5, 4, 3, and 2.
+
+### NRF24L01
+- **CE Pin** - Arduino digital pin 10.
+- **CSN Pin** - Arduino digital pin 14.
+- **SPI Pins** - Connect to the SPI pins on the Arduino (MISO, MOSI, SCK).
+
+### LCD (I2C Interface)
+- **SDA Pin** - Connect to Arduino's A4 pin.
+- **SCL Pin** - Connect to Arduino's A5 pin.
+- **Power Pins** - Connect to VCC and GND.
+
+## Software Setup
+
+### Keypad Input
+- The keypad input is continuously read in the `loop()` function.
+- When a key is pressed, it is added to a string `c`.
+- When the `#` key is pressed, the current string stored in `c` is converted to a character array and transmitted wirelessly.
+
+### NRF24L01 Wireless Communication
+- The NRF24L01 is initialized in the `setup()` function, and a writing pipe is opened with a fixed address `00001`.
+- When a message is ready to be sent (after pressing the `#` key), it is transmitted via the NRF24L01 module using the `radio.write()` function.
+
+### LCD Display
+- The LCD display is used to show the sent message.
+- After the `#` key is pressed and the message is sent, the display shows the message for 1 second before clearing.
+
+## How the Code Works
+
+1. **Setup Phase**:
+   - Serial communication is initialized.
+   - The NRF24L01 module is configured and set up to transmit data.
+   - The LCD is initialized, and the backlight is turned on.
+   
+2. **Loop Phase**:
+   - The code continuously checks for a key press from the keypad.
+   - If a key is pressed, it is added to the string `c`.
+   - When the `#` key is pressed:
+     - The string `c` is converted to a character array.
+     - The data is transmitted wirelessly using the NRF24L01 module.
+     - The sent message is displayed on the LCD screen for 1 second, then the screen is cleared.
+     - The string `c` is reset for the next input.
+
+## Usage
+1. Power on the system.
+2. Press any keys on the keypad. The pressed keys will appear on the LCD screen.
+3. When you are ready to send the message, press the `#` key. The message will be sent wirelessly, and the LCD will display the sent message.
+4. The system will reset and be ready for the next input after displaying the message.
+
+## Possible Modifications
+- **Receiver Code**: You can implement a receiver code using another NRF24L01 module to receive the transmitted messages.
+- **Message Length**: Modify the maximum message length by adjusting the size of the `text` array.
+- **LCD Customization**: You can customize the messages displayed on the LCD or add more features such as a progress indicator for the transmission.
+
+## Notes
+- Ensure that the NRF24L01 modules are properly powered and that the wiring connections are correct.
+- Adjust the RF24 power level (`radio.setPALevel`) depending on the distance between the transmitter and receiver.
